@@ -3,17 +3,24 @@ import DashboardLayout from "../../layout/DashboardLayout";
 import Main from "../../layout/Main";
 import Appointment from "../../Pages/Appointment/Appointment/Appointment";
 import AvailableAppoinment from "../../Pages/Appointment/AvailableAppoinment/AvailableAppoinment";
+import AddDoctor from "../../Pages/Dashboard/AddDoctor/AddDoctor";
+import AllUsers from "../../Pages/Dashboard/AllUsers/AllUsers";
 import Dashboard from "../../Pages/Dashboard/Dashboard/Dashboard";
+import ManageDoctors from "../../Pages/Dashboard/ManageDoctors/ManageDoctors";
 import MyAppointment from "../../Pages/Dashboard/MyAppointment/MyAppointment";
+import Payment from "../../Pages/Dashboard/Payment/Payment";
 import Home from "../../Pages/Home/Home/Home";
 import Login from "../../Pages/Login/Login";
+import DisplayError from "../../Pages/Shared/DisplayError/DisplayError";
 import SignUp from "../../Pages/SignUp/SignUp";
+import AdminRoute from "../AdminRoute/AdminRoute";
 import PrivateRout from "../PrivateRoute/PrivateRout";
 
 export const router = createBrowserRouter([
     {
         path: '/',
         element: <Main></Main>,
+        errorElement:<DisplayError></DisplayError>,
         children: ([
             {
                 path: '/',
@@ -32,21 +39,36 @@ export const router = createBrowserRouter([
                 element:<Appointment></Appointment>
             },
 
-            // {
-            //     path: '/appointment',
-            //     element:<PrivateRout><AvailableAppoinment></AvailableAppoinment></PrivateRout>
-            // }
           
         ])
     },
     {
         path: '/dashboard',
         element: <PrivateRout><DashboardLayout></DashboardLayout></PrivateRout>,
+        errorElement:<DisplayError></DisplayError>,
         children: [
             {
                 path: '/dashboard',
                 element:<MyAppointment></MyAppointment>
-            }
+            },
+            {
+                path: '/dashboard/allusers',
+                element:<AdminRoute><AllUsers></AllUsers></AdminRoute>
+            },
+            {
+                path: '/dashboard/adddoctor',
+                element:<AdminRoute><AddDoctor></AddDoctor></AdminRoute>
+            },
+            {
+                path: '/dashboard/managedoctors',
+                element:<AdminRoute><ManageDoctors></ManageDoctors></AdminRoute>
+            },
+            {
+                path: '/dashboard/payment/:id',
+                element: <AdminRoute><Payment></Payment></AdminRoute>,
+                loader:({params})=>fetch(`http://localhost:5000/bookings/${params.id}`)
+                
+            },
         ]
     }
 ])

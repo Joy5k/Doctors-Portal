@@ -1,9 +1,9 @@
-import { getValue } from "@testing-library/user-event/dist/utils";
 import React, { useContext } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
+import useToken from "../../hooks/useToken";
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors },getValues } = useForm();
@@ -12,7 +12,13 @@ const Login = () => {
   const location = useLocation();
   const from=location.state?.from?.pathnam||'/'
   const navigate = useNavigate()
-  const [useEmail,setUserEmail]=useState()
+  const [useEmail, setUserEmail] = useState();
+  const [loginUserEmail, setLoginUserEmail] = useState('')
+  const [token] = useToken(loginUserEmail);
+  if (token) {
+    console.log('it is Loging page Token check');
+    navigate(from,{replace:true})
+}
 
   const handleLogin = data => {
       console.log(data.email,'this');
@@ -20,7 +26,8 @@ const Login = () => {
       .then(result => {
         const user = result.user;
         console.log(user)
-        navigate(from,{replace:true})
+        setLoginUserEmail(data.email)
+      
       })
       .catch(error => {
         console.log(error)

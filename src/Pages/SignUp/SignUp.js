@@ -4,12 +4,21 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthProvider";
 import toast from 'react-hot-toast';
+import useToken from "../../hooks/useToken";
 
 const SignUp = () => {
   const { register, handleSubmit,formState: { errors } } = useForm();
   const { createUser, updateUser } = useContext(AuthContext);
-  const navigate=useNavigate()
+  const navigate = useNavigate();
+  
   const [signUpError, setSignUPError] = useState('')
+  const [createdUserEmail, setCreatedUserEmail] = useState('');
+  const [token] = useToken(createdUserEmail);
+  if (token) {
+    navigate('/')
+    console.log('i have a secrete token');
+}
+  console.log(createdUserEmail,'checking user email from signUp')
   const handleSignUp = (data) => {
     setSignUPError('')
     createUser(data.email, data.password)
@@ -35,7 +44,7 @@ const SignUp = () => {
   const saveUser = (name,email) => {
     const user = { name, email }
     fetch('http://localhost:5000/users', {
-      method: 'POST',
+      method:'POST',
       headers: {
         'content-type':'application/json'
       },
@@ -44,11 +53,10 @@ const SignUp = () => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data)
-      navigate('/')
+        setCreatedUserEmail(email)
       })
   }
-
+ 
   return (
     <div className="flex justify-center items-center w-full mx-auto h-[800px]">
       <div className="w-96 p-7 border shadow-lg rounded-lg">
