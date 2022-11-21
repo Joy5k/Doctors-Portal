@@ -15,11 +15,11 @@ const CheckoutForm = ({ booking }) => {
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    fetch("http://localhost:5000/create-payment-intent", {
+    fetch("https://doctor-portal-server-eight.vercel.app/create-payment-intent", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        authorization: `bearer ${localStorage.getItem("accessToken")}`,
+        authorization:`bearer ${localStorage.getItem("accessToken")}`,
       },
       body: JSON.stringify({ price }),
     })
@@ -38,7 +38,7 @@ const CheckoutForm = ({ booking }) => {
     }
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
-      //    below  this card is get from the 12 line...
+      //    below  this card is get from the 35 line...
       card,
     });
     if (error) {
@@ -72,7 +72,7 @@ if (paymentIntent.status === "succeeded") {
         email,
         bookingId: _id
     }
-    fetch('http://localhost:5000/payments', {
+    fetch('https://doctor-portal-server-eight.vercel.app/payments', {
         method: 'POST',
         headers: {
             'content-type': 'application/json',
